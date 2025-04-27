@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test de Hemisferio Cerebral</title>
+  <style>
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); 
+      text-align: center; 
+      padding: 20px; 
+      color: #2c3e50;
+    }
+    h1 { margin-bottom: 10px; }
+    .question { 
+      margin: 20px auto; 
+      padding: 20px; 
+      background: white; 
+      border-radius: 16px; 
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      max-width: 600px;
+    }
+    button { 
+      margin: 10px; 
+      padding: 12px 24px; 
+      font-size: 16px; 
+      cursor: pointer; 
+      border-radius: 10px; 
+      border: none; 
+      background-color: #3498db; 
+      color: white; 
+      transition: background 0.3s ease;
+    }
+    button:hover { background-color: #2980b9; }
+    #result { 
+      font-size: 22px; 
+      margin-top: 30px; 
+      background: white; 
+      padding: 25px; 
+      border-radius: 16px; 
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .nav-buttons { margin-top: 20px; }
+    .nav-buttons button { background-color: #e67e22; }
+    .nav-buttons button:hover { background-color: #d35400; }
+    #progress-bar-container {
+      background: #dfe6e9;
+      border-radius: 20px;
+      height: 20px;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 600px;
+    }
+    #progress-bar {
+      background: #6c5ce7;
+      height: 100%;
+      border-radius: 20px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+<h1>¿Qué Hemisferio Predomina en Ti?</h1>
+<div id="progress-bar-container"><div id="progress-bar"></div></div>
+<div id="quiz"></div>
+<div id="result"></div>
+<div class="nav-buttons" id="nav-buttons" style="display:none;">
+  <button onclick="restartQuiz()">Reiniciar Test</button>
+</div>
+
+<script>
+const questions = [
+  { q: "¿Prefieres resolver rompecabezas o dibujar?", left: "Rompecabezas", right: "Dibujar" },
+  { q: "¿Te orientas mejor por mapas o referencias visuales?", left: "Mapas", right: "Referencias visuales" },
+  { q: "¿Te resulta más fácil seguir instrucciones paso a paso o improvisar?", left: "Instrucciones", right: "Improvisar" },
+  { q: "¿Prefieres planificar tus actividades o dejarlas fluir?", left: "Planificar", right: "Dejarlas fluir" },
+  { q: "¿Te gusta más resolver ecuaciones o escribir historias?", left: "Ecuaciones", right: "Historias" },
+  { q: "¿Te concentras más en detalles o en el panorama general?", left: "Detalles", right: "Panorama general" },
+  { q: "¿Piensas más en palabras o en imágenes?", left: "Palabras", right: "Imágenes" },
+  { q: "¿Te resulta más natural calcular mentalmente o imaginar escenarios?", left: "Calcular", right: "Imaginar" }
+];
+
+let currentQuestion = 0;
+let leftScore = 0;
+let rightScore = 0;
+
+function updateProgress() {
+  let progress = ((currentQuestion) / questions.length) * 100;
+  document.getElementById('progress-bar').style.width = `${progress}%`;
+}
+
+function showQuestion() {
+  if (currentQuestion < questions.length) {
+    const q = questions[currentQuestion];
+    updateProgress();
+    document.getElementById('quiz').innerHTML = `
+      <div class="question">
+        <h2>${q.q}</h2>
+        <button onclick="answer('left')">${q.left}</button>
+        <button onclick="answer('right')">${q.right}</button>
+        <br><br>
+        <button onclick="previousQuestion()">Anterior</button>
+      </div>
+    `;
+  } else {
+    showResult();
+  }
+}
+
+function answer(side) {
+  if (side === 'left') leftScore++;
+  else rightScore++;
+  currentQuestion++;
+  showQuestion();
+}
+
+function previousQuestion() {
+  if (currentQuestion > 0) {
+    currentQuestion--;
+    showQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('progress-bar').style.width = `100%`;
+  let resultText = '';
+  if (leftScore > rightScore) {
+    resultText = `✨ <strong>Dominancia del Hemisferio Izquierdo</strong><br><br>
+      Eres una persona lógica, analítica y estructurada.<br>
+      💼 Ideal para carreras como <strong>Ingeniería</strong>, <strong>Administración</strong> o <strong>Contaduría</strong>!`;
+  } else {
+    resultText = `✨ <strong>Dominancia del Hemisferio Derecho</strong><br><br>
+      Eres creativo, intuitivo y visual.<br>
+      🎨 Ideal para carreras como <strong>Diseño Gráfico</strong>, <strong>Arte</strong> o <strong>Publicidad</strong>!`;
+  }
+  document.getElementById('quiz').innerHTML = '';
+  document.getElementById('result').innerHTML = resultText;
+  document.getElementById('nav-buttons').style.display = 'block';
+}
+
+function restartQuiz() {
+  currentQuestion = 0;
+  leftScore = 0;
+  rightScore = 0;
+  document.getElementById('result').innerHTML = '';
+  document.getElementById('nav-buttons').style.display = 'none';
+  showQuestion();
+}
+
+// Inicializar
+showQuestion();
+</script>
+
+</body>
+</html>
